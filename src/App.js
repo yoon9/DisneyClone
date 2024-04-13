@@ -1,6 +1,7 @@
 import styled from "styled-components"
 
 import Nav from "./components/Nav"
+import Banner from "./components/Banner"
 
 import "./App.css"
 import homeBackground from "../src/assets/images/home-background.png"
@@ -9,6 +10,7 @@ function App() {
   return (
     <Container>
       <Nav />
+      <Banner />
     </Container>
   )
 }
