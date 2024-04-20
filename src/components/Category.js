@@ -85,12 +85,13 @@ const Wrap = styled.div`
   }
   video {
     width: 100%;
-    height: 100;
+    height: 100%;
     position: absolute;
     top: 0px;
     opacity: 0;
     z-index: 0;
-    border-radius: 10px;
+    border-radius: 5px;
+    object-fit: cover;
   }
   &:hover {
     box-shadow: rgba(0 0 0 / 80%) 0px 40px 58px -16px, rgb(0 0 0 / 72%) 0px 30px 22px -10px;
