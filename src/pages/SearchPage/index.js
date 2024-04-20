@@ -6,12 +6,12 @@ import "./SearchPage.css"
 import useDebounce from "../../hooks/useDebounce"
 
 const SearchPage = () => {
+  const navigate = useNavigate()
   const [searchResults, setSearchResults] = useState([])
 
   const useQuery = () => {
     return new URLSearchParams(useLocation().search)
   }
-  const navigate = useNavigate()
 
   let query = useQuery()
   const searchTerm = query.get("q")
