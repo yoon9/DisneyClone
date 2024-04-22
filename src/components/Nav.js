@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from "firebase/auth"
+import {
+  getAuth,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth"
 
 import styled from "styled-components"
 import logo from "../assets/images/logo.svg"
@@ -8,6 +14,7 @@ import logo from "../assets/images/logo.svg"
 const Nav = () => {
   const [show, setShow] = useState(false)
   const [searchValue, setSearchValue] = useState("")
+  const [userData, setUserData] = useState({})
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const auth = getAuth()
@@ -23,7 +30,7 @@ const Nav = () => {
         navigate("/")
       }
     })
-  }, [auth, navigate])
+  }, [auth, navigate, pathname])
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll)
@@ -47,9 +54,22 @@ const Nav = () => {
 
   const handleAuth = () => {
     signInWithPopup(auth, provider)
-      .then((result) => {})
+      .then((result) => {
+        setUserData(result.user)
+      })
       .catch((error) => {
         console.log(error)
+      })
+  }
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        setUserData({})
+        navigate(`/`)
+      })
+      .catch((error) => {
+        alert(error.message)
       })
   }
 
@@ -62,13 +82,21 @@ const Nav = () => {
       {pathname === "/" ? (
         <Login onClick={handleAuth}>Login</Login>
       ) : (
-        <Input
-          value={searchValue}
-          onChange={handleChange}
-          className="nav_input"
-          type="text"
-          placeholder="영화를 검색해주세요."
-        />
+        <>
+          <Input
+            value={searchValue}
+            onChange={handleChange}
+            className="nav_input"
+            type="text"
+            placeholder="영화를 검색해주세요."
+          />
+          <SignOut>
+            <UserImg src={userData.photoURL} alt={userData.dsplayName} />
+            <DropDown>
+              <span onClick={handleSignOut}>Sign Out</span>
+            </DropDown>
+          </SignOut>
+        </>
       )}
     </NavWrapper>
   )
@@ -98,6 +126,7 @@ const Logo = styled.a`
   max-height: 70px;
   font-size: 0;
   display: inline-block;
+  cursor: pointer;
 
   img {
     display: block;
@@ -110,7 +139,7 @@ const Login = styled.a`
   padding: 8px 16px;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  aborder: 1px solid #f9f9f9;
+  border: 1px solid #f9f9f9;
   transition: all 0.2s ease 0s;
   &:hover {
     background-color: #f9f9f9;
@@ -128,4 +157,42 @@ const Input = styled.input`
   color: white;
   padding: 5px;
   border: none;
+`
+
+const DropDown = styled.div`
+  position: absolute;
+  top: 48px;
+  right: 0px;
+  background: rgb(19, 19, 19);
+  border: 1px solid rgba(151, 151, 151, 0.34);
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 50%) 0px 0px 18px 0px;
+  padding: 10px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  width: 100px;
+  opacity: 0;
+`
+
+const SignOut = styled.div`
+  position: relative;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    ${DropDown} {
+      opacity: 1;
+      transition-duration: 1s;
+    }
+  }
+`
+
+const UserImg = styled.img`
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
 `
